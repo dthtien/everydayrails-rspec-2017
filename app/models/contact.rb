@@ -3,6 +3,7 @@ class Contact < ApplicationRecord
   validates :firstname, :lastname, :email, presence: true
   validates :email, uniqueness: true
   validates :phones, length: { is: 3 }
+  accepts_nested_attributes_for :phones
 
   def name
     "#{firstname} #{lastname}"
