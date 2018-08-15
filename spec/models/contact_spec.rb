@@ -40,20 +40,20 @@ describe Contact do
         lastname: 'Smith',
         email: 'jsmith@example.com'
       )
-      @jones = Contact.create(
+      @jones = FactoryBot.create(
         :contact,
         firstname: 'Tim',
         lastname: 'Jones',
         email: 'tjone@ex'
       )
-      @johnson = Contact.create(
+      @johnson = FactoryBot.create(
         :contact,
         firstname: 'John',
         lastname: 'Johnson',
         email: 'jjohnson@example.com'
       )
     end
-    context "with matching letters" do
+    context 'with matching letters' do
       it 'returns sorted array of result that match' do
         expect(Contact.by_letter('J')).to eq [@johnson, @jones]
       end
