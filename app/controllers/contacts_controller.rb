@@ -1,11 +1,20 @@
 class ContactsController < ApplicationController
-  before_action :set_contact, only: [:show, :edit, :update, :destroy]
+  before_action :set_contact, only: %i[show edit update destroy hide_contact]
 
   # GET /contacts
   # GET /contacts.json
   def index
     letter = params[:letter]
     @contacts = letter ? Contact.by_letter(letter) : Contact.all
+
+    respond_to do |format|
+      format.html
+      format.csv do
+        send_data Contact.to_csv(@contacts),
+          type: 'text/csv; charset=iso-8859-1; header=present',
+          disposition: 'attachment; filename=contact.csv'
+      end
+    end
   end
 
   # GET /contacts/1
@@ -50,6 +59,11 @@ class ContactsController < ApplicationController
         format.json { render json: @contact.errors, status: :unprocessable_entity }
       end
     end
+  end
+
+  def hide_contact
+    @contact.toggle!(:hidden)
+    redirect_to contacts_path, notice: 'Success!'
   end
 
   # DELETE /contacts/1
