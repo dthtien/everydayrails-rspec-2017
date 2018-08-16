@@ -113,5 +113,125 @@ RSpec.describe ContactsController, type: :controller do
         expect(response).to render_template :new
       end
     end
+
+    describe 'PATCH #update' do
+      before :each do
+        @contact = create(
+          :contact,
+          firstname: 'Lawrence',
+          lastname: 'Smith'
+        )
+      end
+
+      context 'valid attributes' do
+        it 'locates the requested @contact' do
+          patch :update,
+            params: { id: @contact.id, contact: attributes_for(:contact) }
+          expect(assigns(:contact)).to eq(@contact)
+        end
+
+        it 'change attributes of @contact' do
+          patch :update,
+            params: {
+              id: @contact,
+              contact: attributes_for(
+                :contact,
+                firstname: 'Larry',
+                lastname: 'Smith'
+              )
+            }
+          @contact.reload
+          expect(@contact.firstname).to eq('Larry')
+          expect(@contact.lastname).to eq('Smith')
+        end
+
+        it 'redirects to updated contact' do
+          patch :update, params: {
+            id: @contact,
+            contact: attributes_for(:contact)
+          }
+
+          expect(response).to redirect_to @contact
+        end
+      end
+
+      context 'with invalid attributes' do
+        it 'does not change the attributes of contact' do
+          patch :update, params: {
+            id: @contact,
+            contact: attributes_for(
+              :contact,
+              firstname: 'Larry',
+              lastname: nil
+            )
+          }
+          @contact.reload
+          expect(@contact.firstname).to_not eq('Larry')
+          expect(@contact.lastname). to eq('Smith')
+        end
+
+        it 're-renders the edit template' do
+          patch :update,
+            params: {
+              id: @contact,
+              contact: attributes_for(:invalid_contact)
+            }
+          expect(response).to render_template :edit
+        end
+      end
+    end
+
+    describe 'DELETE #destroy' do
+      before :each do
+        @contact = create(:contact)
+      end
+
+      it 'deletes the contact' do
+        expect do
+          delete :destroy,
+            params: { id: @contact }
+        end.to change(Contact, :count).by(-1)
+      end
+
+      it 'redirects to contacts#index' do
+        delete :destroy, params: { id: @contact }
+        expect(response).to redirect_to contacts_url
+      end
+    end
+  end
+
+  describe 'PATCH hide_contact' do
+    before :each do
+      @contact = create(:contact)
+    end
+
+    it 'marks the contact as hidden' do
+      patch :hide_contact, params: { id: @contact }
+      expect(@contact.reload.hidden?).to be true
+    end
+
+    it 'redirects to contacts#index' do
+      patch :hide_contact, params: { id: @contact }
+      expect(response).to redirect_to contacts_url
+    end
+  end
+
+  describe 'CSV output' do
+    it 'returns a CSV file' do
+      get :index, format: :csv
+      expect(response.headers['Content-Type']).to match 'text/csv'
+    end
+
+    it 'returns content' do
+      create(
+        :contact,
+        firstname: 'Aaron',
+        lastname: 'Sumner',
+        email: 'aaron@sample.com'
+      )
+
+      get :index, format: :csv
+      expect(response.body).to match 'Aaron,Sumner,aaron@sample.com'
+    end
   end
 end

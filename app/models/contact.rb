@@ -1,5 +1,5 @@
 class Contact < ApplicationRecord
-  has_many :phones
+  has_many :phones, dependent: :destroy
   validates :firstname, :lastname, :email, presence: true
   validates :email, uniqueness: true
   validates :phones, length: { is: 3 }
@@ -12,4 +12,5 @@ class Contact < ApplicationRecord
   def self.by_letter(letter)
     where("lastname LIKE ?", "%#{letter}%").order(:lastname)
   end
+
 end
