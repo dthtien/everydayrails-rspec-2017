@@ -103,9 +103,9 @@ RSpec.describe ContactsController, type: :controller do
 
     context 'with invalid attributes' do
       it 'does not save the new contact in the database' do
-        expect{
+        expect do
           post :create, params: { contact: attributes_for(:invalid_contact) }
-        }.to_not change(Contact, :count)
+        end.to_not change(Contact, :count)
       end
 
       it 're-renders the :new template' do
