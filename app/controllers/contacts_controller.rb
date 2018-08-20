@@ -1,6 +1,6 @@
 class ContactsController < ApplicationController
+  before_action :authenticate_user!, only: %i[new create edit updated destroy]
   before_action :set_contact, only: %i[show edit update destroy hide_contact]
-
   # GET /contacts
   # GET /contacts.json
   def index
