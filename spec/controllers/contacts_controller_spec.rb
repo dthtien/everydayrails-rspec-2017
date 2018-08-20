@@ -1,10 +1,9 @@
 require 'rails_helper'
 # Contact test
 RSpec.describe ContactsController, type: :controller do
-  describe 'administator access' do
+  shared_examples 'public to access to contacts' do
     before :each do
-      user = create(:admin)
-      session[:user_id] = user.id
+      @contact = create( :contact, firstname: 'Lawrence', lastname: 'Smith')
     end
 
     describe 'GET # index' do
@@ -51,6 +50,11 @@ RSpec.describe ContactsController, type: :controller do
         get :show, params: { id: contact.id }
         expect(response).to render_template :show
       end
+    end
+  end
+  describe 'administator access' do
+    before :each do
+      set_user_session create(:admin)
     end
 
     describe 'Get #new' do
