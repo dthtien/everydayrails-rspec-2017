@@ -92,11 +92,11 @@ RSpec.describe ContactsController, type: :controller do
 
       context 'with valid attributes' do
         it 'save the new contact in the database' do
-          expect{
+          expect do
             post :create, params: {
               contact: attributes_for(:contact, phones_attributes: @phones)
             }
-          }.to change(Contact, :count).by(1)
+          end.to change(Contact, :count).by(1)
         end
 
         it 'redirect to contacts#show' do
