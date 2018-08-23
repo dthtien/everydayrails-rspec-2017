@@ -5,11 +5,7 @@ describe Contact do
     expect(build(:contact)).to be_valid
   end
 
-  it 'is invalid without a firstname' do
-    contact = build(:contact, firstname: nil)
-    contact.valid?
-    expect(contact.errors[:firstname]).to include("can't be blank")
-  end
+  it { is_expected.to validate_presence_of(:firstname) }
 
   it 'is invalid without a lastname' do
     contact = build(:contact, lastname: nil)
@@ -59,12 +55,12 @@ describe Contact do
       end
     end
     context 'with non-matching letters' do
-       it 'omits results that do not match' do
+      it 'omits results that do not match' do
         expect(Contact.by_letter('J')).not_to include @smith
       end
     end
   end
-  
+
   it 'has a valid factory' do
     expect(FactoryBot.build(:contact)).to be_valid
   end
