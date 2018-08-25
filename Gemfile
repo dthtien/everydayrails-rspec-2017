@@ -60,8 +60,10 @@ group :test do
   gem 'faker'
   gem 'database_cleaner'
   gem 'launchy'
-  gem 'devise'
+  gem 'email_spec', '~> 2.2'
 end
+
+gem 'devise'
 
 group :development, :test do
   gem 'rspec-rails'
